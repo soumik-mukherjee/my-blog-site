@@ -10,10 +10,14 @@ FROM node:14.16.0-buster-slim as yarn-build
 LABEL maintainer="Soumik Mukherjee <me@soumikmukherjee.dev>"
 # ARG CICD_USER_PAT
 WORKDIR /app
-COPY --chown=node:node package.json ./
-COPY --chown=node:node yarn.lock ./
-COPY --chown=node:node src ./src/
-COPY --chown=node:node static ./static/
+
+# Prepare to install yarn dependencies
+
+COPY --chown=node:node package.json .
+COPY --chown=node:node yarn.lock .
+
+# Uncomment if using dependencies from a private yarn registry, e.g. GitHub registry
+
 # COPY --chown=node:node .npmrc .
 # First echo to always insert a newline
 # RUN echo
@@ -21,9 +25,23 @@ COPY --chown=node:node static ./static/
 # RUN echo //npm.pkg.github.com/unifo/:_authToken=${CICD_USER_PAT} >> .npmrc
 # RUN echo //npm.pkg.github.com/download/@unifo/:_authToken=${CICD_USER_PAT} >> .npmrc
 
+# Install yarn dependencies
+
 RUN yarn
 
-COPY --chown=node:node .env.production /app/
+# Prepare to build
+
+COPY --chown=node:node .env.production .
+COPY --chown=node:node src ./src/
+COPY --chown=node:node content ./content/
+COPY --chown=node:node static ./static/
+COPY --chown=node:node gatsby-browser.js .
+COPY --chown=node:node gatsby-config.js .
+COPY --chown=node:node gatsby-node.js .
+COPY --chown=node:node .prettierignore .
+COPY --chown=node:node .prettierrc .
+
+# Build
 
 RUN yarn build
 
