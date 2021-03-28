@@ -21,7 +21,7 @@ spec:
       containers:
       - name: my-blog-site-container
         # image: ghcr.io/soumik-mukherjee/my-blog-site:0.1.0-dev.1
-        image: docker.io/soumik-mukherjee/my-blog-site:0.1.0-dev.1
+        image: docker.io/soumik/my-blog-site:0.1.0-dev.1
         ports:
         - name: http
           containerPort: 80
